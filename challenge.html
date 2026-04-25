@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHALLENGE TERMINAL</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .question { font-size: 1.6rem; }
+    .options button { font-size: 1.4rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 data-text="CYBER CHALLENGE">CYBER CHALLENGE</h1>
+    
+    <div style="text-align:center; margin:20px 0;">
+      TEAM: <strong id="teamName" style="color:#00ff9d; font-size:2rem;"></strong> 
+      | TIME LEFT: <span class="timer" id="timer">45:00</span>
+    </div>
+
+    <div id="questionContainer"></div>
+
+    <div style="text-align:center; margin:30px 0;">
+      <button onclick="prevQuestion()">← PREV</button>
+      <button onclick="nextQuestion()">NEXT →</button>
+      <button onclick="skipQuestion()">SKIP (0 PTS)</button>
+      <button onclick="submitQuiz()" style="background:#00aa00; color:black;">TRANSMIT ANSWERS</button>
+    </div>
+
+    <div style="font-size:2rem; text-align:center;">
+      CURRENT SCORE: <strong id="currentScore" style="color:#ffff00;">0</strong>
+    </div>
+  </div>
+
+  <script src="questions.js"></script>
+  <script>
+    // Paste the entire JavaScript code from the previous challenge.html here
+    // (the one with startTimer, loadQuestion, selectAnswer, etc.)
+
+    let currentTeam = localStorage.getItem('currentTeam') || "TEAM01";
+    let currentQ = 0;
+    let score = 0;
+    let answers = {};
+    let timeLeft = 45 * 60;
+    let timerInterval;
+
+    document.getElementById('teamName').textContent = currentTeam;
+
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        const min = Math.floor(timeLeft / 60);
+        const sec = timeLeft % 60;
+        document.getElementById('timer').textContent = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          alert("TIME EXPIRED. SUBMITTING...");
+          submitQuiz();
+        }
+      }, 1000);
+    }
+
+    function loadQuestion() {
+      const q = questions[currentQ];
+      let html = `
+        <div class="question">
+          <h3>Q${q.id}. ${q.question} <span style="color:#ffff00;">(${q.points} PTS)</span></h3>
+      `;
+
+      if (q.type === "mcq") {
+        html += `<div class="options">`;
+        q.options.forEach((opt, i) => {
+          html += `<button onclick="selectAnswer(${q.id}, ${i})">${opt}</button>`;
+        });
+        html += `</div>`;
+      } else if (q.type === "fill") {
+        html += `
+          <input type="text" id="fillAnswer" placeholder="TYPE YOUR ANSWER HERE">
+          <button onclick="submitFill(${q.id})">SUBMIT ANSWER</button>
+        `;
+      }
+      html += `</div>`;
+      document.getElementById('questionContainer').innerHTML = html;
+      updateScore();
+    }
+
+    function selectAnswer(qid, selected) {
+      const q = questions.find(qq => qq.id === qid);
+      answers[qid] = selected;
+      if (selected === q.correct) score += q.points;
+      else score -= 50;
+      updateScore();
+      nextQuestion();
+    }
+
+    function submitFill(qid) {
+      const ans = document.getElementById('fillAnswer').value.trim().toLowerCase();
+      const q = questions.find(qq => qq.id === qid);
+      answers[qid] = ans;
+      if (ans === q.correct.toLowerCase()) score += q.points;
+      else score -= 50;
+      updateScore();
+      nextQuestion();
+    }
+
+    function updateScore() {
+      document.getElementById('currentScore').textContent = score;
+      localStorage.setItem(`score_${currentTeam}`, score);
+      localStorage.setItem(`answers_${currentTeam}`, JSON.stringify(answers));
+    }
+
+    function nextQuestion() { if (currentQ < questions.length - 1) { currentQ++; loadQuestion(); } }
+    function prevQuestion() { if (currentQ > 0) { currentQ--; loadQuestion(); } }
+    function skipQuestion() { nextQuestion(); }
+
+    function submitQuiz() {
+      clearInterval(timerInterval);
+      localStorage.setItem(`score_${currentTeam}`, score);
+      alert(`TRANSMISSION COMPLETE!\n\nTEAM: ${currentTeam}\nFINAL SCORE: ${score} POINTS`);
+      window.location.href = 'index.html';
+    }
+
+    window.onload = () => {
+      loadQuestion();
+      startTimer();
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ADMIN CONTROL PANEL</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1 data-text="LIVE MONITORING">LIVE MONITORING</h1>
+    <p style="text-align:center; font-size:1.8rem;">CLASS 9-10 HACKING CHALLENGE • REAL-TIME LEADERBOARD</p>
+
+    <table id="leaderboard">
+      <thead>
+        <tr>
+          <th>RANK</th>
+          <th>TEAM CODE</th>
+          <th>SCORE</th>
+          <th>STATUS</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div style="text-align:center; margin:30px;">
+      <button onclick="refreshScores()">REFRESH NOW</button>
+      <span style="margin-left:30px; color:#888;">Auto-refresh every 3 seconds</span>
+    </div>
+  </div>
+
+  <script src="questions.js"></script>
+  <script>
+    function refreshScores() {
+      const tbody = document.querySelector('#leaderboard tbody');
+      tbody.innerHTML = '';
+
+      let scoresList = [];
+
+      for (let i = 1; i <= 7; i++) {
+        const team = `TEAM0${i}`;
+        const teamScore = parseInt(localStorage.getItem(`score_${team}`)) || 0;
+        scoresList.push({team, score: teamScore});
+      }
+
+      // Sort by score descending
+      scoresList.sort((a, b) => b.score - a.score);
+
+      scoresList.forEach((item, index) => {
+        const status = item.score > 0 ? "ACTIVE" : "NO ACTIVITY";
+        const row = `
+          <tr>
+            <td>#${index+1}</td>
+            <td>${item.team}</td>
+            <td style="color:#ffff00; font-size:1.8rem;">${item.score}</td>
+            <td>${status}</td>
+          </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+
+    // Auto refresh
+    setInterval(refreshScores, 3000);
+    window.onload = refreshScores;
+  </script>
+</body>
+</html>

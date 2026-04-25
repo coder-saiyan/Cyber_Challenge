@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACCESS TERMINAL // HACKING SIM</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1 data-text="HACKING SIMULATOR 2026">HACKING SIMULATOR 2026</h1>
+    <p style="text-align:center; font-size:1.8rem; margin-bottom:30px;">CLASS 9-10 | CYBER DEFENSE CHALLENGE</p>
+
+    <div style="max-width:500px; margin:40px auto; text-align:center;">
+      <h2 style="margin-bottom:20px;">TEAM LOGIN</h2>
+      <input type="text" id="teamCode" placeholder="ENTER TEAM CODE (e.g. TEAM01)" maxlength="7">
+      <br>
+      <button onclick="loginTeam()">INITIALIZE ACCESS →</button>
+    </div>
+
+    <div style="text-align:center; margin-top:60px;">
+      <button onclick="goToAdmin()" style="background:#220000; color:#ff0044; border-color:#ff0044;">
+        ADMIN DASHBOARD (TEACHER ONLY)
+      </button>
+    </div>
+  </div>
+
+  <script src="questions.js"></script>
+  <script>
+    function loginTeam() {
+      let code = document.getElementById('teamCode').value.trim().toUpperCase();
+      if (!code || !code.startsWith('TEAM')) {
+        alert("INVALID TEAM CODE. FORMAT: TEAM01");
+        return;
+      }
+      localStorage.setItem('currentTeam', code);
+      window.location.href = 'challenge.html';
+    }
+
+    function goToAdmin() {
+      const pass = prompt("ENTER ADMIN PASSCODE:");
+      if (pass === "admin123") {
+        window.location.href = 'admin.html';
+      } else {
+        alert("ACCESS DENIED.");
+      }
+    }
+  </script>
+</body>
+</html>
