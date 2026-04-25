@@ -3,34 +3,218 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ADMIN CONTROL PANEL</title>
+  <title>Live Leaderboard - Hacking Challenge</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%);
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1100px;
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 40px 50px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    h1 {
+      font-size: 3.4rem;
+      text-align: center;
+      margin-bottom: 10px;
+      color: #60a5fa;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 1.55rem;
+      color: #94a3b8;
+      margin-bottom: 45px;
+    }
+
+    /* Password Screen */
+    #passwordScreen {
+      text-align: center;
+      padding: 80px 40px;
+    }
+
+    #passwordScreen input {
+      padding: 18px 25px;
+      font-size: 1.3rem;
+      width: 340px;
+      border: 2px solid #64748b;
+      border-radius: 12px;
+      background: #1e2937;
+      color: white;
+      margin-bottom: 25px;
+    }
+
+    #passwordScreen button {
+      padding: 14px 45px;
+      font-size: 1.3rem;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    /* Leaderboard */
+    #leaderboardContainer {
+      display: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    th {
+      background: #1e40af;
+      color: white;
+      padding: 22px 15px;
+      font-size: 1.45rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    td {
+      padding: 22px 15px;
+      text-align: center;
+      font-size: 1.65rem;
+      border: none !important;
+    }
+
+    tr:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .rank {
+      font-weight: bold;
+      color: #facc15;
+      font-size: 1.8rem;
+    }
+
+    .score {
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: #4ade80;
+    }
+
+    /* Top 3 Highlight */
+    tr:nth-child(1) { background: rgba(234, 179, 8, 0.18) !important; }
+    tr:nth-child(2) { background: rgba(163, 163, 163, 0.16) !important; }
+    tr:nth-child(3) { background: rgba(180, 83, 9, 0.16) !important; }
+
+    .status {
+      font-weight: 600;
+      padding: 8px 24px;
+      border-radius: 50px;
+      display: inline-block;
+      min-width: 130px;
+    }
+
+    .submitted {
+      background: #60a5fa;
+      color: white;
+    }
+
+    .waiting {
+      background: #f87171;
+      color: #7f1d1d;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 35px;
+      color: #94a3b8;
+      font-size: 1.15rem;
+    }
+
+    button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 12px 32px;
+      font-size: 1.15rem;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1 data-text="LIVE MONITORING">LIVE MONITORING</h1>
-    <p style="text-align:center; font-size:1.8rem;">Cyber_Challenge • LIVE LEADERBOARD</p>
+
+  <!-- Password Screen -->
+  <div class="container" id="passwordScreen">
+    <h1>LIVE MONITORING</h1>
+    <p class="subtitle">CLASS 9-10 HACKING CHALLENGE • REAL-TIME LEADERBOARD</p>
+    
+    <h2 style="margin: 50px 0 25px; color:#cbd5e1;">Enter Admin Password</h2>
+    <input type="password" id="adminPassword" placeholder="Enter password" autocomplete="off">
+    <br><br>
+    <button onclick="checkPassword()">Access Leaderboard</button>
+  </div>
+
+  <!-- Leaderboard Screen -->
+  <div class="container" id="leaderboardContainer">
+    <h1>LIVE MONITORING</h1>
+    <p class="subtitle">CLASS 9-10 HACKING CHALLENGE • REAL-TIME LEADERBOARD</p>
 
     <table id="leaderboard">
       <thead>
         <tr>
-          <th>RANK</th>
-          <th>TEAM CODE</th>
-          <th>SCORE</th>
-          <th>STATUS</th>
+          <th style="width:15%">RANK</th>
+          <th style="width:35%">TEAM CODE</th>
+          <th style="width:25%">SCORE</th>
+          <th style="width:25%">STATUS</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
 
-    <div style="text-align:center; margin:30px;">
+    <div class="footer">
+      Auto-refreshing every 2 seconds • 
+      Last Updated: <strong id="lastUpdated">Just now</strong><br><br>
       <button onclick="refreshScores()">REFRESH NOW</button>
-      <span style="margin-left:30px; color:#888;">Auto-refresh every 3 seconds</span>
     </div>
   </div>
 
   <script src="questions.js"></script>
   <script>
+    const CORRECT_PASSWORD = "Qwerty11!1234";
+
+    function checkPassword() {
+      const enteredPass = document.getElementById('adminPassword').value.trim();
+      
+      if (enteredPass === CORRECT_PASSWORD) {
+        document.getElementById('passwordScreen').style.display = 'none';
+        document.getElementById('leaderboardContainer').style.display = 'block';
+        refreshScores();
+      } else {
+        alert("Incorrect Password! Access Denied.");
+        document.getElementById('adminPassword').value = '';
+      }
+    }
+
     function refreshScores() {
       const tbody = document.querySelector('#leaderboard tbody');
       tbody.innerHTML = '';
@@ -40,28 +224,42 @@
       for (let i = 1; i <= 7; i++) {
         const team = `TEAM0${i}`;
         const teamScore = parseInt(localStorage.getItem(`score_${team}`)) || 0;
-        scoresList.push({team, score: teamScore});
+        scoresList.push({ team, score: teamScore });
       }
 
-      // Sort by score descending
       scoresList.sort((a, b) => b.score - a.score);
 
       scoresList.forEach((item, index) => {
-        const status = item.score > 0 ? "ACTIVE" : "NO ACTIVITY";
+        let statusHTML = item.score > 0 
+          ? `<span class="status submitted">SUBMITTED</span>` 
+          : `<span class="status waiting">WAITING</span>`;
+
         const row = `
           <tr>
-            <td>#${index+1}</td>
-            <td>${item.team}</td>
-            <td style="color:#ffff00; font-size:1.8rem;">${item.score}</td>
-            <td>${status}</td>
+            <td class="rank">#${index + 1}</td>
+            <td><strong>${item.team}</strong></td>
+            <td class="score">${item.score}</td>
+            <td>${statusHTML}</td>
           </tr>`;
         tbody.innerHTML += row;
       });
+
+      const now = new Date();
+      const timeStr = `${now.getHours()}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+      document.getElementById('lastUpdated').textContent = timeStr;
     }
 
-    // Auto refresh
-    setInterval(refreshScores, 3000);
-    window.onload = refreshScores;
+    // Auto refresh every 2 seconds
+    setInterval(() => {
+      if (document.getElementById('leaderboardContainer').style.display === 'block') {
+        refreshScores();
+      }
+    }, 2000);
+
+    // Enter key support
+    document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') checkPassword();
+    });
   </script>
 </body>
 </html>
