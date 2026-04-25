@@ -8,19 +8,19 @@
 </head>
 <body>
   <div class="container">
-    <h1 data-text="HACKING SIMULATOR 2026">HACKING SIMULATOR 2026</h1>
+    <h1 data-text="HACKING SIMULATOR 2026">Cyber_Challenge 2026</h1>
     <p style="text-align:center; font-size:1.8rem; margin-bottom:30px;">CLASS 9-10 | CYBER DEFENSE CHALLENGE</p>
 
     <div style="max-width:500px; margin:40px auto; text-align:center;">
       <h2 style="margin-bottom:20px;">TEAM LOGIN</h2>
-      <input type="text" id="teamCode" placeholder="ENTER TEAM CODE (e.g. TEAM01)" maxlength="7">
+      <input type="text" id="teamCode" placeholder="ENTER TEAM CODE...." maxlength="7">
       <br>
       <button onclick="loginTeam()">INITIALIZE ACCESS →</button>
     </div>
 
     <div style="text-align:center; margin-top:60px;">
       <button onclick="goToAdmin()" style="background:#220000; color:#ff0044; border-color:#ff0044;">
-        ADMIN DASHBOARD (TEACHER ONLY)
+        ADMIN DASHBOARD
       </button>
     </div>
   </div>
@@ -30,7 +30,7 @@
     function loginTeam() {
       let code = document.getElementById('teamCode').value.trim().toUpperCase();
       if (!code || !code.startsWith('TEAM')) {
-        alert("INVALID TEAM CODE. FORMAT: TEAM01");
+        alert("❗INVALID TEAM CODE....");
         return;
       }
       localStorage.setItem('currentTeam', code);
